@@ -9,7 +9,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from flair.data import Dictionary
 from flair.models import LanguageModel
-
+from tqdm import tqdm
 
 log = logging.getLogger(__name__)
 
@@ -28,10 +28,12 @@ class TextCorpus(object):
 
         self.current_train_file_index = len(self.train_files)
 
+        log.info("Reading in and splitting validation file...")
         self.valid = self.charsplit(os.path.join(path, 'valid.txt'),
                                     forward=forward,
                                     split_on_char=self.split_on_char)
 
+        log.info("Reading in and splitting test file...")
         self.test = self.charsplit(os.path.join(path, 'test.txt'),
                                    forward=forward,
                                    split_on_char=self.split_on_char)
@@ -67,7 +69,7 @@ class TextCorpus(object):
         #
         with open(path, 'r', encoding="utf-8") as f:
             tokens = 0
-            for line in f:
+            for line in tqdm(f):
 
                 if split_on_char:
                     chars = list(line)
@@ -86,7 +88,7 @@ class TextCorpus(object):
             with open(path, 'r', encoding="utf-8") as f:
                 ids = torch.LongTensor(tokens)
                 token = 0
-                for line in f:
+                for line in tqdm(f):
                     line = self.random_casechange(line)
 
                     if split_on_char:
@@ -103,7 +105,7 @@ class TextCorpus(object):
             with open(path, 'r', encoding="utf-8") as f:
                 ids = torch.LongTensor(tokens)
                 token = tokens - 1
-                for line in f:
+                for line in tqdm(f):
                     line = self.random_casechange(line)
 
                     if split_on_char:
