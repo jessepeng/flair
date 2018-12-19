@@ -54,6 +54,7 @@ class TextCorpus(object):
 
         current_train_file = self.train_files[self.current_train_file_index]
 
+        log.info("Reading in and splitting next training split...")
         train_slice = self.charsplit(os.path.join(self.train_path, current_train_file),
                                     expand_vocab=False,
                                     forward=self.forward,
@@ -192,6 +193,8 @@ class LanguageModelTrainer:
             scheduler: ReduceLROnPlateau = ReduceLROnPlateau(optimizer, verbose=True, factor=anneal_factor,
                                                              patience=patience)
 
+            train_slice = None
+
             for split in range(1, max_splits + 1):
 
                 # after pass over all splits, increment epoch count
@@ -203,7 +206,8 @@ class LanguageModelTrainer:
                 for group in optimizer.param_groups:
                     learning_rate = group['lr']
 
-                train_slice = self.corpus.get_next_train_slice()
+                if number_of_splits > 1 or train_slice is None:
+                    train_slice = self.corpus.get_next_train_slice()
 
                 train_data = self._batchify(train_slice, mini_batch_size)
                 log.info('\t({:%H:%M:%S})'.format(datetime.datetime.now()))
@@ -341,8 +345,6 @@ class LanguageModelTrainer:
         data = data.narrow(0, 0, nbatch * batch_size)
         # Evenly divide the data across the bsz batches.
         data = data.view(batch_size, -1).t().contiguous()
-        if torch.cuda.is_available():
-            data = data.cuda()
         return data
 
     @staticmethod
@@ -350,6 +352,9 @@ class LanguageModelTrainer:
         seq_len = min(sequence_length, len(source) - 1 - i)
         data = Variable(source[i:i + seq_len])
         target = Variable(source[i + 1:i + 1 + seq_len].view(-1))
+        if torch.cuda.is_available():
+            data = data.cuda()
+            target = target.cuda()
         return data, target
 
     @staticmethod
