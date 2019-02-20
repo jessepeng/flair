@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/flair.svg)](https://badge.fury.io/py/flair)
 [![GitHub Issues](https://img.shields.io/github/issues/zalandoresearch/flair.svg)](https://github.com/zalandoresearch/flair/issues)
-[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](resources/docs/CONTRIBUTING.md)
+[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![Travis](https://img.shields.io/travis/zalandoresearch/flair.svg)](https://travis-ci.org/zalandoresearch/flair)
 
@@ -16,13 +16,16 @@ Flair is:
 models to your text, such as named entity recognition (NER), part-of-speech tagging (PoS),
  sense disambiguation and classification.
 
+* **Multilingual.** Thanks to the Flair community, we support a rapidly growing number of languages. We also now include
+'*one model, many languages*' taggers, i.e. single models that predict PoS or NER tags for input text in various languages.
+
 * **A text embedding library.** Flair has simple interfaces that allow you to use and combine different word and 
-document embeddings, including our proposed **[contextual string embeddings](https://drive.google.com/file/d/17yVpFA7MmXaQFTe-HDpZuqw9fJlmzg56/view?usp=sharing)**.
+document embeddings, including our proposed **[Flair embeddings](https://drive.google.com/file/d/17yVpFA7MmXaQFTe-HDpZuqw9fJlmzg56/view?usp=sharing)**, BERT embeddings and ELMo embeddings.
 
 * **A Pytorch NLP framework.** Our framework builds directly on [Pytorch](https://pytorch.org/), making it easy to 
 train your own models and experiment with new approaches using Flair embeddings and classes.
 
-Now at [version 0.3.2](https://github.com/zalandoresearch/flair/releases)!
+Now at [version 0.4.0](https://github.com/zalandoresearch/flair/releases)!
 
 ## Comparison with State-of-the-Art
 
@@ -41,7 +44,7 @@ Flair outperforms the previous best methods on a range of NLP tasks:
 
 Here's how to [reproduce these numbers](/resources/docs/EXPERIMENTS.md) using Flair. You can also find a detailed evaluation and discussion in our paper: 
 
-*[Contextual String Embeddings for Sequence Labeling](https://drive.google.com/file/d/17yVpFA7MmXaQFTe-HDpZuqw9fJlmzg56/view?usp=sharing).
+*[Contextual String Embeddings for Sequence Labeling](https://aclanthology.coli.uni-saarland.de/papers/C18-1139/c18-1139).
 Alan Akbik, Duncan Blythe and Roland Vollgraf. 
 27th International Conference on Computational Linguistics, COLING 2018.* 
 
@@ -49,7 +52,7 @@ Alan Akbik, Duncan Blythe and Roland Vollgraf.
 
 ### Requirements and Installation
 
-The project is based on PyTorch 0.4+ and Python 3.6+, because methods signatures and type hints are beautiful.
+The project is based on PyTorch 0.4+ and Python 3.6+, because method signatures and type hints are beautiful.
 If you do not have Python 3.6, install it first. [Here is how for Ubuntu 16.04](https://vsupalov.com/developing-with-python3-6-on-ubuntu-16-04/).
 Then, in your favorite virtual environment, simply do:
 
@@ -81,7 +84,10 @@ Done! The `Sentence` now has entity annotations. Print the sentence to see what 
 ```python
 print(sentence)
 print('The following NER tags are found:')
-print(sentence.to_tagged_string())
+
+# iterate over entities and print
+for entity in sentence.get_spans('ner'):
+    print(entity)
 ```
 
 This should print: 
@@ -91,23 +97,33 @@ Sentence: "I love Berlin ." - 4 Tokens
 
 The following NER tags are found: 
 
-I love Berlin <S-LOC> .
+LOC-span [3]: "Berlin"
 ```
 
-## Tutorial
+## Tutorials
 
 We provide a set of quick tutorials to get you started with the library:
 
-* [Tutorial 1: Basics](/resources/docs/TUTORIAL_BASICS.md)
-* [Tutorial 2: Tagging your Text](/resources/docs/TUTORIAL_TAGGING.md)
-* [Tutorial 3: Using Word Embeddings](/resources/docs/TUTORIAL_WORD_EMBEDDING.md)
-* [Tutorial 4: Using Document Embeddings](/resources/docs/TUTORIAL_TEXT_EMBEDDINGS.md)
-* [Tutorial 5: Training your own Models](/resources/docs/TUTORIAL_TRAINING_A_MODEL.md)
-* [Tutorial 6: Training your own Embeddings](/resources/docs/TUTORIAL_TRAINING_LM_EMBEDDINGS.md)
+* [Tutorial 1: Basics](/resources/docs/TUTORIAL_1_BASICS.md)
+* [Tutorial 2: Tagging your Text](/resources/docs/TUTORIAL_2_TAGGING.md)
+* [Tutorial 3: Using Word Embeddings](/resources/docs/TUTORIAL_3_WORD_EMBEDDING.md)
+* [Tutorial 4: Using BERT, ELMo, and Flair Embeddings](/resources/docs/TUTORIAL_4_ELMO_BERT_FLAIR_EMBEDDING.md)
+* [Tutorial 5: Using Document Embeddings](/resources/docs/TUTORIAL_5_DOCUMENT_EMBEDDINGS.md)
+* [Tutorial 6: Loading your own Corpus](/resources/docs/TUTORIAL_6_CORPUS.md)
+* [Tutorial 7: Training your own Models](/resources/docs/TUTORIAL_7_TRAINING_A_MODEL.md)
+* [Tutorial 8: Optimizing your own Models](/resources/docs/TUTORIAL_8_MODEL_OPTIMIZATION.md)
+* [Tutorial 9: Training your own Flair Embeddings](/resources/docs/TUTORIAL_9_TRAINING_LM_EMBEDDINGS.md)
  
 The tutorials explain how the base NLP classes work, how you can load pre-trained models to tag your
-text, how you embed your text with different word or document embeddings, and how you can train your own 
+text, how you can embed your text with different word or document embeddings, and how you can train your own 
 language models, sequence labeling models, and text classification models. Let us know if anything is unclear.
+
+There are also good third-party articles and posts that illustrate how to use Flair: 
+* [How to build a text classifier with Flair](https://towardsdatascience.com/text-classification-with-state-of-the-art-nlp-library-flair-b541d7add21f)
+* [How to build a microservice with Flair and Flask](https://shekhargulati.com/2019/01/04/building-a-sentiment-analysis-python-microservice-with-flair-and-flask/)
+* [A docker image for Flair](https://towardsdatascience.com/docker-image-for-nlp-5402c9a9069e)
+* [Great overview of Flair functionality and how to use in Colab](https://www.analyticsvidhya.com/blog/2019/02/flair-nlp-library-python/)
+
 
 ## Citing Flair
 
@@ -130,7 +146,7 @@ Please email your questions or comments to [Alan Akbik](http://alanakbik.github.
 ## Contributing
 
 Thanks for your interest in contributing! There are many ways to get involved; 
-start with our [contributor guidelines](/resources/docs/CONTRIBUTING.md) and then 
+start with our [contributor guidelines](CONTRIBUTING.md) and then 
 check these [open issues](https://github.com/zalandoresearch/flair/issues) for specific tasks.
 
 For contributors looking to get deeper into the API we suggest cloning the repository and checking out the unit 
@@ -143,19 +159,19 @@ You need [Pipenv](https://pipenv.readthedocs.io/) for this:
 
 ```bash
 pipenv install --dev && pipenv shell
-pytest
+pytest tests/
 ```
 
 To run integration tests execute:
 ```bash
-pytest --runintegration
+pytest --runintegration tests/
 ```
 The integration tests will train small models.
 Afterwards, the trained model will be loaded for prediction.
 
 To also run slow tests, such as loading and using the embeddings provided by flair, you should execute:
 ```bash
-pytest --runslow
+pytest --runslow tests/
 ```
 
 ## [License](/LICENSE)
@@ -169,3 +185,4 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
