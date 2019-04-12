@@ -46,3 +46,8 @@ if torch.cuda.is_available():
     device = torch.device('cuda:0')
 else:
     device = torch.device('cpu')
+
+
+def set_flair_device(cuda_device):
+    global device
+    device = cuda_device
